@@ -10,3 +10,8 @@ Encender servidor
 ```bash
   php artisan serve
 ```
+
+ ```diff 
+ - text in red -
+ @@ ss @@
+```
