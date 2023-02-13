@@ -68,3 +68,7 @@ Route::get('/actualizar',function () {
 //API
 Route::get('/productosApi/index','App\Http\controllers\ProductoApiController@index'); 
 Route::post('/productosApi/store','App\Http\controllers\ProductoApiController@store');
+
+
+use App\Http\controllers\ProductoApiController;
+Route::resource('productos',ProductoApiController::class);

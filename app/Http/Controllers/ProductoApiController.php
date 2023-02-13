@@ -54,7 +54,14 @@ class ProductoApiController extends Controller
      */
     public function show($id)
     {
-        //
+        if(Producto::where('id',$id)->exists()){
+            $producto = Producto::where('id',$id)->get()->toJson(JSON_PRETTY_PRINT);
+            return response($producto,200);
+        }else{
+            return response()->json([
+                "mensaje" => 'El id no existe.'
+            ],404);
+        }
     }
 
     /**
@@ -77,7 +84,23 @@ class ProductoApiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if(Producto::where('id',$id)->exists()){
+            $producto = Producto::find($id);
+            $producto->nombre = is_null($request->nombre) ? $producto->nombre : $request->nombre;
+            $producto->precio = is_null($request->precio) ? $producto->precio : $request->precio;
+            $producto->estado = is_null($request->estado) ? $producto->estado : $request->estado;
+            $producto->save();
+            return response()->json(
+                [
+                    "mensaje" => "Producto actualizado con exito."
+                ],
+                200
+            );
+        }else{
+            return response()-json([
+                "mensaje"=>'Producto no encontrado.'
+            ],404);
+        }
     }
 
     /**
@@ -88,6 +111,19 @@ class ProductoApiController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(Producto::where('id',$id)->exists()){
+            $producto = Producto::find($id);
+            $producto->delete();
+            return response()->json(
+                [
+                    "mensaje" => "Producto eliminado con exito."
+                ],
+                200
+            );
+        }else{
+            return response()->json([
+                "mensaje" => 'Producto no encontrado'
+            ],404);
+        }
     }
 }
