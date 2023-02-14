@@ -72,3 +72,4 @@ Route::post('/productosApi/store','App\Http\controllers\ProductoApiController@st
 
 use App\Http\controllers\ProductoApiController;
 Route::resource('productos',ProductoApiController::class);
+
