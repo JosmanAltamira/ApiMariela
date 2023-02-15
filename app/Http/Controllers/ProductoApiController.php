@@ -12,14 +12,20 @@ class ProductoApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $productos = Producto::get()->toJson(JSON_PRETTY_PRINT);
-        return response($productos, 200);
-    }
+    // public function index()
+    // {
+    //     $productos = Producto::get()->toJson(JSON_PRETTY_PRINT);
+    //     return response($productos, 200);
+    // }
+
+        //consultar productos activos 
+        public function index(){
+            $productos = Producto::where('estado',1)->get()->toJson(JSON_PRETTY_PRINT);
+            return response($productos, 200);
+        }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestre el formulario para crear un nuevo recurso.
      *
      * @return \Illuminate\Http\Response
      */
@@ -29,7 +35,7 @@ class ProductoApiController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacene un recurso recién creado en almacenamiento.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -52,16 +58,20 @@ class ProductoApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    //buscar por id
     public function show($id)
     {
-        if(Producto::where('id',$id)->exists()){
-            $producto = Producto::where('id',$id)->get()->toJson(JSON_PRETTY_PRINT);
-            return response($producto,200);
-        }else{
+        if (Producto::where('id', $id)->exists()) {
+            $producto = Producto::where('id', $id)->get()->toJson(JSON_PRETTY_PRINT);
+            return response($producto, 200);
+        } else if (Producto::where('nombre', $id)->exists()) {
+            $producto = Producto::where('nombre', $id)->get()->toJson(JSON_PRETTY_PRINT);
+            return response($producto, 200);
+        } else {
             return response()->json([
-                "mensaje" => 'El id no existe.'
-            ],404);
-        }
+                "message" => "Producto no encontrado"
+            ], 404);
+        } 
     }
 
     /**
@@ -109,14 +119,33 @@ class ProductoApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    // public function destroy($id)
+    // {
+    //     if(Producto::where('id',$id)->exists()){
+    //         $producto = Producto::find($id);
+    //         $producto->delete();
+    //         return response()->json(
+    //             [
+    //                 "mensaje" => "Producto eliminado con exito."
+    //             ],
+    //             200
+    //         );
+    //     }else{
+    //         return response()->json([
+    //             "mensaje" => 'Producto no encontrado'
+    //         ],404);
+    //     }
+    // }
+ 
+    //eliminado logico 
+    public function destroy($id){
         if(Producto::where('id',$id)->exists()){
             $producto = Producto::find($id);
-            $producto->delete();
+            $producto->estado = 0;
+            $producto->save();
             return response()->json(
                 [
-                    "mensaje" => "Producto eliminado con exito."
+                    "mensaje" => "Producto eliminado logicamente."
                 ],
                 200
             );
@@ -126,4 +155,6 @@ class ProductoApiController extends Controller
             ],404);
         }
     }
+
+
 }
